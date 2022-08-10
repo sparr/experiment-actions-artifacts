@@ -53,5 +53,7 @@ jobs:
 
       # this comes last so that the upload will still happen if this fails
       - name: Compare file lists
+        # TODO smarter error handling
+        continue-on-error: true
         run: diff -q ${{ runner.temp }}/previous/ ${{ runner.temp}}/current/
         
