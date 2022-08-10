@@ -23,6 +23,7 @@ jobs:
         run: mkdir -p current && find ${{ github.workspace }} >> current/file_list
       
       - name: Fetch the file list from the last successful workflow
+        # TODO smarter error handling
         continue-on-error: true
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -39,11 +40,13 @@ jobs:
           # Optional, a directory where to extract artifact(s), defaults to the current directory
           path: previous
         
-      - name: Compare file lists
-        run: diff -q previous/ current/
-        
       - name: Upload the new repo file list to an artifact
         uses: actions/upload-artifact@v3
         with:
           name: file-list
           path: current/file_list
+
+      # this comes last so that the upload will still happen if this fails
+      - name: Compare file lists
+        run: diff -q previous/ current/
+        
