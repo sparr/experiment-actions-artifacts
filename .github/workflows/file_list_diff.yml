@@ -55,5 +55,5 @@ jobs:
       - name: Compare file lists
         # TODO smarter error handling
         continue-on-error: true
-        run: diff -q ${{ runner.temp }}/previous/ ${{ runner.temp}}/current/
+        run: diff ${{ runner.temp }}/previous/ ${{ runner.temp}}/current/
         
