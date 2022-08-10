@@ -37,7 +37,12 @@ jobs:
           branch: main
           # Optional, defaults to all types
           event: push
-          # Optional, a directory where to extract artifact(s), defaults to the current directory
+          # Optional, uploaded artifact name,
+          # will download all artifacts if not specified
+          # and extract them into respective subdirectories
+          # https://github.com/actions/download-artifact#download-all-artifacts
+          name: file-list
+                # Optional, a directory where to extract artifact(s), defaults to the current directory
           path: ${{ runner.temp	}}/previous
         
       - name: Upload the new repo file list to an artifact
