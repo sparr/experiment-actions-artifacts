@@ -37,6 +37,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
+        with:
+          # TODO remove this, is only required for fake commit_count benchmark
+          fetch-depth: 0
       - name: "Run benchmark: ${{ matrix.benchmark }}"
         run: |
           mkdir -p "${{ runner.temp }}/current" && "benchmarks/${{ matrix.benchmark }}" > "${{ runner.temp	}}/current/${{ matrix.benchmark }}"
