@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "{\"random1\":${RANDOM},\"random2\":${RANDOM}}"

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "{\"constant1\":12345,\"constant2\":7}"

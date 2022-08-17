@@ -1,0 +1,4 @@
+#!/bin/bash
+
+COUNT=$(git rev-list --count HEAD)
+echo "{\"commit_count\":${COUNT}}"
