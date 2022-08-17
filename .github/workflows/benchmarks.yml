@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: "Run benchmark: ${{ matrix.benchmark }}"
         run: |
-          "benchmarks/${{ matrix.benchmark }}" > "${{ runner.temp	}}/current/${{ matrix.benchmark }}"
+          mkdir -p "${{ runner.temp }}/current" && "benchmarks/${{ matrix.benchmark }}" > "${{ runner.temp	}}/current/${{ matrix.benchmark }}"
 
       - name: Fetch this benchmark from the last successful workflow
         # TODO smarter error handling
