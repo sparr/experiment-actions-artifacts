@@ -102,10 +102,10 @@ jobs:
           if [ $EXIT_CODE -ne 0 ]
           then
             ANNOTATION=$(
-              jq
-              --argfile prev ${{ runner.temp }}/previous/${{ matrix.benchmark }}
-              --argfile curr ${{ runner.temp}}/current/${{ matrix.benchmark }}
-              -n -r
+              jq \
+              --argfile prev ${{ runner.temp }}/previous/${{ matrix.benchmark }} \
+              --argfile curr ${{ runner.temp}}/current/${{ matrix.benchmark }} \
+              -n -r \
               '$prev | [ keys[] | select((($curr[.]/$prev[.]-1)*100)>2) | "\(.) increased from \($prev[.]) to \($curr[.])" ] | join (", ")'
             )
             echo "::error title=Benchmark regression::$ANNOTATION"
