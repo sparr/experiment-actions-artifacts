@@ -93,6 +93,7 @@ jobs:
           ' | tee "${{ runner.temp	}}/comparison"
 
       # TODO simplify ANNOTATION jq call
+      # TODO suppress default "Process completed with exit code 1." error
       - name: Error on unacceptable benchmark increases
         run: |
           set +e
@@ -102,6 +103,6 @@ jobs:
           if [ $EXIT_CODE -ne 0 ]
           then
             ANNOTATION=$( jq --argfile prev ${{ runner.temp }}/previous/${{ matrix.benchmark }} --argfile curr ${{ runner.temp}}/current/${{ matrix.benchmark }} -n -r '$prev | [keys[] | {"\(.)":{ prev:$prev[.], curr:$curr[.], change:($curr[.]-$prev[.]), change_pct:(($curr[.]/$prev[.]-1)*100) }}] | add | [to_entries[] | select(.value.change_pct>2) | "\(.key) increased from \(.value.prev) to \(.value.curr)"] | join(", ")' )
-            echo "::error file=benchmarks/${{ matrix.benchmark }},title=Benchmark regression::$ANNOTATION"
+            echo "::error title=Benchmark regression::$ANNOTATION"
           fi
           (exit $EXIT_CODE)
