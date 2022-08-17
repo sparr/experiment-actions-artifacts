@@ -61,7 +61,7 @@ jobs:
                 # Optional, a directory where to extract artifact(s), defaults to the current directory
           path: ${{ runner.temp	}}/previous
         
-      - name: Upload the new repo file list to an artifact
+      - name: Upload the new benchmark results to an artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.benchmark }}
@@ -71,6 +71,8 @@ jobs:
       - name: Compare current and previous bencmarks
         # TODO smarter error handling
         continue-on-error: true
+        # only run this step if all previous steps completed without error
+        if: ${{ success() }}
         run: >
           jq
           --argfile prev ${{ runner.temp }}/previous/${{ matrix.benchmark }}
