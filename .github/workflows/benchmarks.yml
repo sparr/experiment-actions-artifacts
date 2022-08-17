@@ -33,6 +33,8 @@ jobs:
     strategy:
         matrix:
             benchmark: ${{ fromJson(needs.list-benchmarks.outputs.matrix) }}
+        # don't cancel other benchmarks when one fails
+        fail-fast: false
   
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
