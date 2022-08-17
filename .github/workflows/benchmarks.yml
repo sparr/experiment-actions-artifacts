@@ -78,6 +78,7 @@ jobs:
         continue-on-error: true
         # only run this step if all previous steps completed without error
         if: ${{ success() }}
+        # use jq to produce a comparison between the prev and curr benchmarks
         run: >
           jq
           --argfile prev ${{ runner.temp }}/previous/${{ matrix.benchmark }}
