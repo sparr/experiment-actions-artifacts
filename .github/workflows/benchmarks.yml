@@ -94,6 +94,8 @@ jobs:
 
       # TODO add informative annotation https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#setting-an-error-message
       - name: Error on unacceptable benchmark increases
+        # TODO smarter error handling
+        continue-on-error: true
         run: |
           jq -e 'false == any( .[] ; .change_pct > 2)' "${{ runner.temp	}}/comparison"
           EXIT_CODE=$?
