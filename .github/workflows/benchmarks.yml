@@ -97,8 +97,10 @@ jobs:
         run: |
           jq -e 'false == any( .[] ; .change_pct > 2)' "${{ runner.temp	}}/comparison"
           EXIT_CODE=$?
+          echo $EXIT_CODE
           if [ $EXIT_CODE -ne 0 ]
           then
+            echo "foo"
             ANNOTATION=$( jq --argfile prev prev --argfile curr curr -n -r '$prev | [keys[] | {"\(.)":{ prev:$prev[.], curr:$curr[.], change:($curr[.]-$prev[.]), change_pct:(($curr[.]/$prev[.]-1)*100) }}] | add | [to_entries[] | select(.value.change_pct>2) | "\(.key) increased from \(.value.prev) to \(.value.curr)"] | join(", ")' )
             echo "::error file=benchmarks/${{ matrix.benchmark }},title=Benchmark regression::$ANNOTATION"
           fi
