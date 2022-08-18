@@ -74,6 +74,7 @@ jobs:
 
       # this comes last so that the upload will still happen if this fails
       - name: Compare current and previous bencmarks
+        id: compare
         # TODO smarter error handling
         continue-on-error: true
         # only run this step if all previous steps completed without error
@@ -88,27 +89,24 @@ jobs:
             $prev
             | [
                 keys[]
-                | {"\(.)":{ prev:$prev[.], curr:$curr[.], change:($curr[.]-$prev[.]), change_pct:(($curr[.]/$prev[.]-1)*100) }}
+                | {"\(.)":round(($curr[.]/$prev[.]-1)*100) }
               ]
             | add
-          ' | tee "${{ runner.temp	}}/comparison"
+          ' | tee "${{ runner.temp	}}/pct_change"
+          echo "::set-output name=delta::$(cat ${{ runner.temp	}}/pct_change)"
 
-      # TODO suppress default "Process completed with exit code 1." error
-      - name: Error on unacceptable benchmark increases
+      - name: Regression Mean
+        if: fromJSON(steps.compare.outputs.delta).mean > 2
         run: |
-          set +e
-          jq -e 'false == any( .[] ; .change_pct > 2)' "${{ runner.temp	}}/comparison" > /dev/null
-          EXIT_CODE=$?
-          set -e
-          if [ $EXIT_CODE -ne 0 ]
-          then
-            ANNOTATION=$(
-              jq \
-              --argfile prev ${{ runner.temp }}/previous/${{ matrix.benchmark }} \
-              --argfile curr ${{ runner.temp}}/current/${{ matrix.benchmark }} \
-              -n -r \
-              '$prev | [ keys[] | select((($curr[.]/$prev[.]-1)*100)>2) | "\(.) increased from \($prev[.]) to \($curr[.])" ] | join (", ")'
-            )
-            echo "::error title=Benchmark regression::$ANNOTATION"
-          fi
-          (exit $EXIT_CODE)
+          echo "::error title=Benchmark regression::Mean increased by ${{ fromJSON(steps.compare.outputs.delta).mean }}%"
+
+      - name: Regression Median
+        if: fromJSON(steps.compare.outputs.delta).pct50 > 2
+        run: |
+          echo "::error title=Benchmark regression::Median increased by ${{ fromJSON(steps.compare.outputs.delta).pct50 }}%"
+
+      - name: Regression 90th Percentile
+        if: fromJSON(steps.compare.outputs.delta).pct90 > 2
+        run: |
+          echo "::error title=Benchmark regression::90th Percentile increased by ${{ fromJSON(steps.compare.outputs.delta).pct90 }}%"
+

@@ -1,3 +1,15 @@
 #!/bin/bash
 
-echo "{\"random1\":${RANDOM},\"random2\":${RANDOM}}"
+echo '{
+    "testName": "BenchmarkCommitRANDOM",
+    "numberOfTests": 100,
+    "testsRun": 100,
+    "stdDev": '"$RANDOM"',
+    "mean": '"$RANDOM"',
+    "min": '"$RANDOM"',
+    "pct25": '"$RANDOM"',
+    "pct50": '"$RANDOM"',
+    "pct75": '"$RANDOM"',
+    "pct90": '"$RANDOM"',
+    "max": '"$RANDOM"'
+}'

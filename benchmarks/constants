@@ -1,3 +1,15 @@
 #!/bin/bash
 
-echo "{\"constant1\":12345,\"constant2\":7}"
+echo '{
+    "testName": "BenchmarkConstant",
+    "numberOfTests": 100,
+    "testsRun": 100,
+    "stdDev": 1,
+    "mean": 2,
+    "min": 3,
+    "pct25": 4,
+    "pct50": 5,
+    "pct75": 6,
+    "pct90": 7,
+    "max": 8
+}'
