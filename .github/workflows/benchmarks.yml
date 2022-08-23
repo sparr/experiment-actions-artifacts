@@ -94,8 +94,12 @@ jobs:
       - name: Output comparison results
         if: ${{ success() }}
         id: results
-        run: |
-          echo "::set-output name=delta::$(cat ${{ runner.temp }}/delta)"
+        run: >
+          DELTA="$(cat ${{ runner.temp }}/delta)"
+          DELTA="${DELTA//'%'/%25}"
+          DELTA="${DELTA//$'\n'/%0A}"   
+          DELTA="${DELTA//$'\r'/%0D}"
+          echo "::set-output name=delta::$DELTA"
 
       - name: Regression Mean
         if: fromJSON(steps.results.outputs.delta).mean > .02
