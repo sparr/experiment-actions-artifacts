@@ -87,23 +87,23 @@ jobs:
             $prev
             | [
                 keys[]
-                | {"\(.)":round(($curr[.]/$prev[.]-1)*100) }
+                | {"\(.)":($curr[.]/$prev[.]-1) }
               ]
             | add
-          ' | tee "${{ runner.temp	}}/pct_change"
-          echo "::set-output name=delta::$(cat ${{ runner.temp	}}/pct_change)"
+          ' | tee "${{ runner.temp	}}/delta"
+          echo "::set-output name=delta::$(cat ${{ runner.temp	}}/delta)"
 
       - name: Regression Mean
-        if: fromJSON(steps.compare.outputs.delta).mean > 2
+        if: fromJSON(steps.compare.outputs.delta).mean > .02
         run: |
           echo "::error title=Benchmark regression::Mean increased by ${{ fromJSON(steps.compare.outputs.delta).mean }}%"
 
       - name: Regression Median
-        if: fromJSON(steps.compare.outputs.delta).pct50 > 2
+        if: fromJSON(steps.compare.outputs.delta).pct50 > .02
         run: |
           echo "::error title=Benchmark regression::Median increased by ${{ fromJSON(steps.compare.outputs.delta).pct50 }}%"
 
       - name: Regression 90th Percentile
-        if: fromJSON(steps.compare.outputs.delta).pct90 > 2
+        if: fromJSON(steps.compare.outputs.delta).pct90 > .02
         run: |
           echo "::error title=Benchmark regression::90th Percentile increased by ${{ fromJSON(steps.compare.outputs.delta).pct90 }}%"
