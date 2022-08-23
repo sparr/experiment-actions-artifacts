@@ -86,7 +86,7 @@ jobs:
             $prev
             | [
                 keys[]
-                | {"\(.)":($curr[.]/$prev[.]-1) }
+                | if ($curr[.]|type)=="number" and ($prev[.]|type)=="number" then {"\(.)": ($curr[.]/$prev[.]-1)} else {"\(.)": ($prev[.] + " -> " + $curr[.])} end
               ]
             | add
           ' | tee "${{ runner.temp}}/delta"

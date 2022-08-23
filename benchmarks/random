@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo '{
-    "testName": "BenchmarkCommitRANDOM",
+    "testName": "BenchmarkRandom",
     "numberOfTests": 100,
     "testsRun": 100,
     "stdDev": '"$RANDOM"',
