@@ -128,3 +128,7 @@ jobs:
         with:
           script: |
             core.error('90th Percentile increased by ${{ fromJSON(steps.results.outputs.delta).pct90 }}%')
+
+      - name: Fail on error
+        if: failure()
+        run: (exit 1)
