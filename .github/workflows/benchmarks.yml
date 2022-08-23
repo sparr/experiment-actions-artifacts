@@ -54,6 +54,9 @@ jobs:
           #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
           # Or a workflow status:
           #   "completed", "in_progress", "queued"
+          ### success is too narrow if we fail the job when there are regressions
+          ### completed is too broad, it will select a run with a startup failure and no artifacts to fetch
+          ### FIXME ^^
           workflow_conclusion: completed
           # Optional, will use the branch
           branch: main
