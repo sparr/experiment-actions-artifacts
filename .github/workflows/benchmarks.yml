@@ -101,6 +101,10 @@ jobs:
           DELTA="${DELTA//$'\r'/%0D}"
           echo "::set-output name=delta::$DELTA"
 
+      - name: Check results
+        run: |
+          echo "${{ fromJSON(steps.results.outputs.delta) }}"
+
       - name: Regression Mean
         if: fromJSON(steps.results.outputs.delta).mean > .02
         run: |
