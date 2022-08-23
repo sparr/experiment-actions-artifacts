@@ -94,7 +94,7 @@ jobs:
       - name: Output comparison results
         if: ${{ success() }}
         id: results
-        run: >
+        run: |
           DELTA="$(cat ${{ runner.temp }}/delta)"
           DELTA="${DELTA//'%'/%25}"
           DELTA="${DELTA//$'\n'/%0A}"   
