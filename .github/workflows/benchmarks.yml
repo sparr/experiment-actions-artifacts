@@ -86,7 +86,7 @@ jobs:
             $prev
             | [
                 keys[]
-                | if ($curr[.]|type)=="number" and ($prev[.]|type)=="number" then {"\(.)": ($curr[.]/$prev[.]-1)} else {"\(.)": ($prev[.] + " -> " + $curr[.])} end
+                | if ($curr[.]|type)=="number" and ($prev[.]|type)=="number" then {"\(.)": ($curr[.]/$prev[.]-1)*100} else {"\(.)": ($prev[.] + " -> " + $curr[.])} end
               ]
             | add
           ' | tee "${{ runner.temp}}/delta"
@@ -101,21 +101,23 @@ jobs:
           DELTA="${DELTA//$'\r'/%0D}"
           echo "::set-output name=delta::$DELTA"
 
-      - name: Check results
-        run: |
-          echo "${{ fromJSON(steps.results.outputs.delta) }}"
-
       - name: Regression Mean
-        if: fromJSON(steps.results.outputs.delta).mean > .02
-        run: |
-          echo "::error title=Benchmark regression::Mean increased by ${{ fromJSON(steps.results.outputs.delta).mean }}%"
+        if: fromJSON(steps.results.outputs.delta).mean > 2
+        uses: actions/github-script@v3 # provides better custom error output than `echo "::error::" && exit 1`
+        with:
+          script: |
+            core.setFailed('Mean increased by ${{ fromJSON(steps.results.outputs.delta).mean }}%')
 
       - name: Regression Median
-        if: fromJSON(steps.results.outputs.delta).pct50 > .02
-        run: |
-          echo "::error title=Benchmark regression::Median increased by ${{ fromJSON(steps.results.outputs.delta).pct50 }}%"
+        if: fromJSON(steps.results.outputs.delta).median > 2
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Median increased by ${{ fromJSON(steps.results.outputs.delta).median }}%')
 
       - name: Regression 90th Percentile
-        if: fromJSON(steps.results.outputs.delta).pct90 > .02
-        run: |
-          echo "::error title=Benchmark regression::90th Percentile increased by ${{ fromJSON(steps.results.outputs.delta).pct90 }}%"
+        if: fromJSON(steps.results.outputs.delta).pct90 > 2
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('90th Percentile increased by ${{ fromJSON(steps.results.outputs.delta).pct90 }}%')
