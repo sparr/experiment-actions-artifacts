@@ -111,15 +111,15 @@ jobs:
         uses: actions/github-script@v3 # provides better custom error output than `echo "::error::" && exit 1`
         with:
           script: |
-            core.setFailed('Mean increased by ${{ fromJSON(steps.results.outputs.delta).mean }}%')
+            core.error('Mean increased by ${{ fromJSON(steps.results.outputs.delta).mean }}%')
 
       - name: Regression Median
-        if: fromJSON(steps.results.outputs.delta).median > 2
+        if: fromJSON(steps.results.outputs.delta).pct50 > 2
         continue-on-error: true
         uses: actions/github-script@v3
         with:
           script: |
-            core.setFailed('Median increased by ${{ fromJSON(steps.results.outputs.delta).median }}%')
+            core.error('Median increased by ${{ fromJSON(steps.results.outputs.delta).pct50 }}%')
 
       - name: Regression 90th Percentile
         if: fromJSON(steps.results.outputs.delta).pct90 > 2
@@ -127,4 +127,4 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            core.setFailed('90th Percentile increased by ${{ fromJSON(steps.results.outputs.delta).pct90 }}%')
+            core.error('90th Percentile increased by ${{ fromJSON(steps.results.outputs.delta).pct90 }}%')
