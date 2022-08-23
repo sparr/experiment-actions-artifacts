@@ -106,24 +106,21 @@ jobs:
           echo "::set-output name=delta::$DELTA"
 
       - name: Regression Mean
-        if: fromJSON(steps.results.outputs.delta).mean > 2
-        continue-on-error: true
+        if: always() and fromJSON(steps.results.outputs.delta).mean > 2
         uses: actions/github-script@v3 # provides better custom error output than `echo "::error::" && exit 1`
         with:
           script: |
             core.error('Mean increased by ${{ fromJSON(steps.results.outputs.delta).mean }}%')
 
       - name: Regression Median
-        if: fromJSON(steps.results.outputs.delta).pct50 > 2
-        continue-on-error: true
+        if: always() and fromJSON(steps.results.outputs.delta).pct50 > 2
         uses: actions/github-script@v3
         with:
           script: |
             core.error('Median increased by ${{ fromJSON(steps.results.outputs.delta).pct50 }}%')
 
       - name: Regression 90th Percentile
-        if: fromJSON(steps.results.outputs.delta).pct90 > 2
-        continue-on-error: true
+        if: always() and fromJSON(steps.results.outputs.delta).pct90 > 2
         uses: actions/github-script@v3
         with:
           script: |
